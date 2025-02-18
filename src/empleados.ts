@@ -3,6 +3,7 @@ namespace Empleados {
         nombre: string;
         salarioMensual: number;
         salarioAnual?: number;
+        bonoAnual?: number;
     }
 
     export class clsEmpleados {
@@ -24,7 +25,18 @@ namespace Empleados {
         }
 
         public calcularSueldosAnuales(): void {
-            this.empleados.forEach(empleado => empleado.salarioAnual = empleado.salarioMensual * 12);
+            this.empleados.forEach(empleado => {
+                empleado.salarioAnual = empleado.salarioMensual * 12;
+            });
+
+            this.actualizarTabla(this.empleados);
+        }
+        public calcularBonos(): void {
+            this.empleados = this.empleados.map(empleado => ({
+                ...empleado,
+                bonoAnual: empleado.salarioAnual! * (empleado.salarioMensual > 15000 ? 0.10 : 0.05) 
+            }));
+
             this.actualizarTabla(this.empleados);
         }
 
@@ -115,20 +127,20 @@ namespace Empleados {
                 .on("click", () => this.calcularSueldosAnuales());
 
             form.append("button")
+                .text("Calcular Bonos Anuales")
+                .style("margin-top", "10px")
+                .style("padding", "8px")
+                .style("cursor", "pointer")
+                .style("width", "100%")
+                .on("click", () => this.calcularBonos());
+
+            form.append("button")
                 .text("Filtrar +15,000")
                 .style("margin-top", "10px")
                 .style("padding", "8px")
                 .style("cursor", "pointer")
                 .style("width", "100%")
-                .on("click", () => this.filtrarEmpleados());
-
-            form.append("button")
-                .text("Total de Sueldos")
-                .style("margin-top", "10px")
-                .style("padding", "8px")
-                .style("cursor", "pointer")
-                .style("width", "100%")
-                .on("click", () => this.calcularTotalSueldos());
+                 .on("click", () => this.filtrarEmpleados());
 
             ventana.append("table")
                 .attr("id", "tabla-empleados")
@@ -141,16 +153,35 @@ namespace Empleados {
 
         private actualizarTabla(empleados: Empleado[] = this.empleados): void {
             const tabla = d3.select("#tabla-empleados");
-            tabla.html("");
 
-            tabla.append("tr")
-                .html("<th>Nombre</th><th>Salario Mensual</th><th>Salario Anual</th>")
-                .style("background", "#ddd");
+            if (tabla.select("thead").empty()) {
+                tabla.append("thead").append("tr")
+                    .selectAll("th")
+                    .data(["Nombre", "Salario Mensual", "Salario Anual", "Bono Anual"]) 
+                    .enter()
+                    .append("th")
+                    .style("border-bottom", "2px solid #ddd")
+                    .style("padding", "8px")
+                    .text(d => d);
 
-            empleados.forEach(emp => {
-                tabla.append("tr")
-                    .html(`<td>${emp.nombre}</td><td>${emp.salarioMensual}</td><td>${emp.salarioAnual || ''}</td>`);
-            });
+                tabla.append("tbody").attr("id", "tbody-empleados");
+            }
+
+            const tbody = d3.select("#tbody-empleados");
+
+            const rows = tbody.selectAll("tr")
+                .data(empleados, (d: Empleado) => d.nombre);
+
+            const newRows = rows.enter().append("tr");
+
+            newRows.append("td").text(d => d.nombre);
+            newRows.append("td").text(d => d.salarioMensual);
+            newRows.append("td").text(d => d.salarioAnual ?? "");
+            newRows.append("td").text(d => d.bonoAnual ?? ""); 
+            rows.select("td:nth-child(3)").text(d => d.salarioAnual ?? "");
+            rows.select("td:nth-child(4)").text(d => d.bonoAnual ?? "");
+
+            rows.exit().remove();
         }
     }
 }

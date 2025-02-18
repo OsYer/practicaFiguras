@@ -4,6 +4,7 @@ var app;
         let rectangulo = null;
         let cuadrado = null;
         let empleados = null;
+        let usuariosUI = null;
         console.log("Aplicación iniciada...");
         d3.select("body")
             .append("button")
@@ -46,9 +47,24 @@ var app;
             .on("click", () => {
             if (!empleados) {
                 empleados = new Empleados.clsEmpleados();
-                console.log("Cuadrado");
+                console.log("Empleados");
             }
             empleados.crearUI();
+        });
+        d3.select("body")
+            .append("button")
+            .text("Uso de post y get con api usuarios")
+            .style("padding", "10px")
+            .style("font-size", "16px")
+            .style("margin", "20px auto")
+            .style("display", "block")
+            .style("cursor", "pointer")
+            .on("click", () => {
+            if (!usuariosUI) {
+                usuariosUI = new CRUD.Usuarios();
+                console.log("Cuadrado");
+            }
+            usuariosUI.mostrarVentana();
         });
     }
     app.ini = ini;
