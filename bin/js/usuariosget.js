@@ -70,4 +70,4 @@ var CRUD;
     }
     CRUD.Usuarios = Usuarios;
 })(CRUD || (CRUD = {}));
-//# sourceMappingURL=post.js.map
+//# sourceMappingURL=usuariosget.js.map
