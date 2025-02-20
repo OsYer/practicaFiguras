@@ -1,4 +1,8 @@
 namespace app {
+    function mostrarVentana(): void {
+        d3.selectAll(".ventana").style("display", "none");
+    }
+
     export function ini(): void {
         let rectangulo: Figuras.Rectangulo | null = null;
         let cuadrado: Figuras.Cuadrado | null = null;
@@ -20,6 +24,7 @@ namespace app {
                     rectangulo = new Figuras.Rectangulo();
                     console.log("Rectangulo");
                 }
+                mostrarVentana();
                 rectangulo.crearUI();
             });
 
@@ -36,10 +41,11 @@ namespace app {
                     cuadrado = new Figuras.Cuadrado();
                     console.log("Cuadrado");
                 }
+                mostrarVentana();
                 cuadrado.crearUI();
             });
 
-            d3.select("body")
+        d3.select("body")
             .append("button")
             .text("Ejemplo de Uso de map() en Arrays")
             .style("padding", "10px")
@@ -52,10 +58,11 @@ namespace app {
                     empleados = new Empleados.clsEmpleados();
                     console.log("Empleados");
                 }
+                mostrarVentana();
                 empleados.crearUI();
             });
-            
-            d3.select("body")
+
+        d3.select("body")
             .append("button")
             .text("Uso de post y get con api usuarios")
             .style("padding", "10px")
@@ -68,7 +75,8 @@ namespace app {
                     usuariosUI = new CRUD.Usuarios();
                     console.log("Cuadrado");
                 }
-                usuariosUI.mostrarVentana();    
+                mostrarVentana();
+                usuariosUI.mostrarVentana();
             });
     }
 }

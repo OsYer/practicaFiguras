@@ -15,6 +15,7 @@ namespace CRUD {
             const ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-usuarios")
+                .attr("class", "ventana")
                 .style("position", "absolute")
                 .style("top", "100px")
                 .style("left", "100px")
@@ -43,7 +44,6 @@ namespace CRUD {
                 .style("margin-top", "10px")
                 .style("color", "#333");
 
-            // 🔹 Formulario para agregar usuarios
             const formulario = ventana.append("div")
                 .style("margin-bottom", "20px");
 
@@ -51,19 +51,27 @@ namespace CRUD {
             const inputNombre = formulario.append("input")
                 .attr("type", "text")
                 .attr("id", "nombre")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+            formulario.append("br");
 
             formulario.append("label").text("Email:");
             const inputEmail = formulario.append("input")
                 .attr("type", "email")
                 .attr("id", "email")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+            ;
+            formulario.append("br");
 
             formulario.append("label").text("Teléfono:");
             const inputTelefono = formulario.append("input")
                 .attr("type", "text")
                 .attr("id", "telefono")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+
+                formulario.append("br");
 
             formulario.append("button")
                 .text("Agregar Usuario")
@@ -80,6 +88,7 @@ namespace CRUD {
                         inputTelefono.property("value")
                     );
                 });
+            formulario.append("br");
 
             const tabla = ventana.append("table")
                 .style("width", "100%")
@@ -108,7 +117,7 @@ namespace CRUD {
                     console.log("Usuarios obtenidos:", data);
 
                     const tbody = d3.select("#tabla-usuarios");
-                    tbody.html(""); // Limpiar antes de agregar datos nuevos
+                    tbody.html("");
 
                     const rows = tbody.selectAll("tr")
                         .data(data, (d: Usuario) => d.id)
@@ -123,7 +132,6 @@ namespace CRUD {
         }
 
         private agregarUsuario(nombre: string, email: string, telefono: string): void {
-            // Validar que los campos no estén vacíos
             if (!nombre || !email || !telefono) {
                 alert("Todos los campos son obligatorios.");
                 return;
@@ -136,27 +144,19 @@ namespace CRUD {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(nuevoUsuario)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error al agregar usuario: ${response.statusText}`);
-                }
-                return response.text();
-            })
-            .then(mensaje => {
-                console.log(mensaje); // "Usuario agregado exitosamente"
-                alert("Usuario agregado correctamente.");
-                this.cargarUsuarios(); // Recargar la lista después de agregar
-            })
-            .catch(error => console.error("Error:", error));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error al agregar usuario: ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(mensaje => {
+                    console.log(mensaje); 
+                    alert("Usuario agregado correctamente.");
+                    this.cargarUsuarios(); 
+                })
+                .catch(error => console.error("Error:", error));
         }
     }
 }
-
-function iniciarApp() {
-    let usuariosUI: CRUD.Usuarios | null = null;
-    if (!usuariosUI) {
-        usuariosUI = new CRUD.Usuarios();
-        console.log("Iniciando CRUD de usuarios...");
-    }
-    usuariosUI.mostrarVentana();
-}
+ 

@@ -13,10 +13,10 @@ var Figuras;
                 ventana.style("display", "block");
                 return;
             }
-            d3.select("#ventana-cuadrado").remove();
             ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-rectangulo")
+                .attr("class", "ventana")
                 .style("position", "absolute")
                 .style("top", "100px")
                 .style("left", "100px")

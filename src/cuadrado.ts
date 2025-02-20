@@ -15,12 +15,11 @@ namespace Figuras {
                 ventana.style("display", "block");
                 return;
             }
-
-            d3.select("#ventana-rectangulo").remove();
-
+            
             ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-cuadrado")
+                .attr("class", "ventana")
                 .style("position", "absolute")
                 .style("top", "100px")
                 .style("left", "100px")

@@ -61,6 +61,7 @@ namespace Empleados {
             ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-empleados")
+                .attr("class", "ventana")
                 .style("position", "absolute")
                 .style("top", "100px")
                 .style("left", "100px")
@@ -89,7 +90,8 @@ namespace Empleados {
                 .style("margin-top", "10px")
                 .style("color", "#333");
 
-            const form = ventana.append("div").style("padding", "10px");
+            const form = ventana.append("div")
+            .style("padding", "20px");
 
             form.append("label").text("Nombre: ");
             form.append("input")

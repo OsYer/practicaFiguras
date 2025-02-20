@@ -1,5 +1,8 @@
 var app;
 (function (app) {
+    function mostrarVentana() {
+        d3.selectAll(".ventana").style("display", "none");
+    }
     function ini() {
         let rectangulo = null;
         let cuadrado = null;
@@ -19,6 +22,7 @@ var app;
                 rectangulo = new Figuras.Rectangulo();
                 console.log("Rectangulo");
             }
+            mostrarVentana();
             rectangulo.crearUI();
         });
         d3.select("body")
@@ -34,6 +38,7 @@ var app;
                 cuadrado = new Figuras.Cuadrado();
                 console.log("Cuadrado");
             }
+            mostrarVentana();
             cuadrado.crearUI();
         });
         d3.select("body")
@@ -49,6 +54,7 @@ var app;
                 empleados = new Empleados.clsEmpleados();
                 console.log("Empleados");
             }
+            mostrarVentana();
             empleados.crearUI();
         });
         d3.select("body")
@@ -64,6 +70,7 @@ var app;
                 usuariosUI = new CRUD.Usuarios();
                 console.log("Cuadrado");
             }
+            mostrarVentana();
             usuariosUI.mostrarVentana();
         });
     }

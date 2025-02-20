@@ -9,6 +9,7 @@ var CRUD;
             const ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-usuarios")
+                .attr("class", "ventana")
                 .style("position", "absolute")
                 .style("top", "100px")
                 .style("left", "100px")
@@ -34,24 +35,30 @@ var CRUD;
                 .style("text-align", "center")
                 .style("margin-top", "10px")
                 .style("color", "#333");
-            // 🔹 Formulario para agregar usuarios
             const formulario = ventana.append("div")
                 .style("margin-bottom", "20px");
             formulario.append("label").text("Nombre:");
             const inputNombre = formulario.append("input")
                 .attr("type", "text")
                 .attr("id", "nombre")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+            formulario.append("br");
             formulario.append("label").text("Email:");
             const inputEmail = formulario.append("input")
                 .attr("type", "email")
                 .attr("id", "email")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+            ;
+            formulario.append("br");
             formulario.append("label").text("Teléfono:");
             const inputTelefono = formulario.append("input")
                 .attr("type", "text")
                 .attr("id", "telefono")
-                .style("margin", "5px");
+                .style("margin", "5px")
+                .style("width", "100%");
+            formulario.append("br");
             formulario.append("button")
                 .text("Agregar Usuario")
                 .style("cursor", "pointer")
@@ -63,6 +70,7 @@ var CRUD;
                 .on("click", () => {
                 this.agregarUsuario(inputNombre.property("value"), inputEmail.property("value"), inputTelefono.property("value"));
             });
+            formulario.append("br");
             const tabla = ventana.append("table")
                 .style("width", "100%")
                 .style("border-collapse", "collapse")
@@ -85,7 +93,7 @@ var CRUD;
                 .then((data) => {
                 console.log("Usuarios obtenidos:", data);
                 const tbody = d3.select("#tabla-usuarios");
-                tbody.html(""); // Limpiar antes de agregar datos nuevos
+                tbody.html("");
                 const rows = tbody.selectAll("tr")
                     .data(data, (d) => d.id)
                     .enter()
@@ -97,7 +105,6 @@ var CRUD;
                 .catch(error => console.error("Error al obtener usuarios:", error));
         }
         agregarUsuario(nombre, email, telefono) {
-            // Validar que los campos no estén vacíos
             if (!nombre || !email || !telefono) {
                 alert("Todos los campos son obligatorios.");
                 return;
@@ -115,21 +122,13 @@ var CRUD;
                 return response.text();
             })
                 .then(mensaje => {
-                console.log(mensaje); // "Usuario agregado exitosamente"
+                console.log(mensaje);
                 alert("Usuario agregado correctamente.");
-                this.cargarUsuarios(); // Recargar la lista después de agregar
+                this.cargarUsuarios();
             })
                 .catch(error => console.error("Error:", error));
         }
     }
     CRUD.Usuarios = Usuarios;
 })(CRUD || (CRUD = {}));
-function iniciarApp() {
-    let usuariosUI = null;
-    if (!usuariosUI) {
-        usuariosUI = new CRUD.Usuarios();
-        console.log("Iniciando CRUD de usuarios...");
-    }
-    usuariosUI.mostrarVentana();
-}
 //# sourceMappingURL=usuariosget-post.js.map
