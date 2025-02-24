@@ -8,6 +8,7 @@ var app;
         let cuadrado = null;
         let empleados = null;
         let usuariosUI = null;
+        let gestor = null;
         console.log("Aplicación iniciada...");
         d3.select("body")
             .append("button")
@@ -43,7 +44,7 @@ var app;
         });
         d3.select("body")
             .append("button")
-            .text("Ejemplo de Uso de map() en Arrays")
+            .text("Ejemplo de Uso de en Array")
             .style("padding", "10px")
             .style("font-size", "16px")
             .style("margin", "20px auto")
@@ -72,6 +73,22 @@ var app;
             }
             mostrarVentana();
             usuariosUI.mostrarVentana();
+        });
+        d3.select("body")
+            .append("button")
+            .text("Gestión de productos con Map</>")
+            .style("padding", "10px")
+            .style("font-size", "16px")
+            .style("margin", "20px auto")
+            .style("display", "block")
+            .style("cursor", "pointer")
+            .on("click", () => {
+            if (!gestor) {
+                gestor = new Tienda.Productos();
+                console.log("Productos");
+            }
+            mostrarVentana();
+            gestor.crearUI();
         });
     }
     app.ini = ini;

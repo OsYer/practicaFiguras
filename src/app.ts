@@ -8,6 +8,7 @@ namespace app {
         let cuadrado: Figuras.Cuadrado | null = null;
         let empleados: Empleados.clsEmpleados | null = null;
         let usuariosUI: CRUD.Usuarios | null = null;
+        let gestor: Tienda.Productos | null = null;
 
         console.log("Aplicación iniciada...");
 
@@ -47,7 +48,7 @@ namespace app {
 
         d3.select("body")
             .append("button")
-            .text("Ejemplo de Uso de map() en Arrays")
+            .text("Ejemplo de Uso de en Array")
             .style("padding", "10px")
             .style("font-size", "16px")
             .style("margin", "20px auto")
@@ -62,7 +63,7 @@ namespace app {
                 empleados.crearUI();
             });
 
-        d3.select("body")
+            d3.select("body")
             .append("button")
             .text("Uso de post y get con api usuarios")
             .style("padding", "10px")
@@ -77,6 +78,23 @@ namespace app {
                 }
                 mostrarVentana();
                 usuariosUI.mostrarVentana();
+            });  
+            
+            d3.select("body")
+            .append("button")
+            .text("Gestión de productos con Map</>")
+            .style("padding", "10px")
+            .style("font-size", "16px")
+            .style("margin", "20px auto")
+            .style("display", "block")
+            .style("cursor", "pointer")
+            .on("click", () => {
+                if (!gestor) {
+                    gestor = new Tienda.Productos();
+                    console.log("Productos");
+                }
+                mostrarVentana();
+                gestor.crearUI();
             });
     }
 }
