@@ -3,22 +3,28 @@ var app;
     function mostrarVentana() {
         d3.selectAll(".ventana").style("display", "none");
     }
+    function crearBoton(texto, handler) {
+        d3.select("body")
+            .append("button")
+            .text(texto)
+            .attr("class", "boton-estandar")
+            .on("click", handler);
+    }
     function ini() {
         let rectangulo = null;
         let cuadrado = null;
         let empleados = null;
         let usuariosUI = null;
         let gestor = null;
-        console.log("Aplicación iniciada...");
+        // console.log("Aplicación iniciada...");
         d3.select("body")
-            .append("button")
-            .text("Mostrar Calculadora de Rectángulo")
-            .style("padding", "10px")
-            .style("font-size", "16px")
-            .style("margin", "20px auto")
-            .style("display", "block")
-            .style("cursor", "pointer")
-            .on("click", () => {
+            .append("h2")
+            .text("Menú de Prácticas")
+            .attr("class", "titulo-menu")
+            .style("font-size", "clamp(20px, 4vw, 32px)")
+            .style("color", "#ffffff")
+            .style("margin-bottom", "20px");
+        crearBoton("Mostrar Calculadora de Rectángulo", () => {
             if (!rectangulo) {
                 rectangulo = new Figuras.Rectangulo();
                 console.log("Rectangulo");
@@ -26,15 +32,7 @@ var app;
             mostrarVentana();
             rectangulo.crearUI();
         });
-        d3.select("body")
-            .append("button")
-            .text("Mostrar Calculadora de Cuadrado")
-            .style("padding", "10px")
-            .style("font-size", "16px")
-            .style("margin", "20px auto")
-            .style("display", "block")
-            .style("cursor", "pointer")
-            .on("click", () => {
+        crearBoton("Mostrar Calculadora de Cuadrado", () => {
             if (!cuadrado) {
                 cuadrado = new Figuras.Cuadrado();
                 console.log("Cuadrado");
@@ -42,15 +40,7 @@ var app;
             mostrarVentana();
             cuadrado.crearUI();
         });
-        d3.select("body")
-            .append("button")
-            .text("Ejemplo de Uso de en Array")
-            .style("padding", "10px")
-            .style("font-size", "16px")
-            .style("margin", "20px auto")
-            .style("display", "block")
-            .style("cursor", "pointer")
-            .on("click", () => {
+        crearBoton("Ejemplo de Uso de en Array", () => {
             if (!empleados) {
                 empleados = new Empleados.clsEmpleados();
                 console.log("Empleados");
@@ -58,37 +48,50 @@ var app;
             mostrarVentana();
             empleados.crearUI();
         });
-        d3.select("body")
-            .append("button")
-            .text("Uso de post y get con api usuarios")
-            .style("padding", "10px")
-            .style("font-size", "16px")
-            .style("margin", "20px auto")
-            .style("display", "block")
-            .style("cursor", "pointer")
-            .on("click", () => {
+        crearBoton("Uso de post y get con API usuarios", () => {
             if (!usuariosUI) {
                 usuariosUI = new CRUD.Usuarios();
-                console.log("Cuadrado");
+                console.log("Usuarios");
             }
             mostrarVentana();
             usuariosUI.mostrarVentana();
         });
-        d3.select("body")
-            .append("button")
-            .text("Gestión de productos con Map</>")
-            .style("padding", "10px")
-            .style("font-size", "16px")
-            .style("margin", "20px auto")
-            .style("display", "block")
-            .style("cursor", "pointer")
-            .on("click", () => {
+        crearBoton("Gestión de productos con Map", () => {
             if (!gestor) {
                 gestor = new Tienda.Productos();
                 console.log("Productos");
             }
             mostrarVentana();
             gestor.crearUI();
+        });
+        d3.select("body")
+            .style("display", "flex")
+            .style("flex-direction", "column")
+            .style("align-items", "center")
+            .style("justify-content", "center")
+            .style("min-height", "100vh")
+            .style("background", "linear-gradient(45deg, #1e3c72, #2a5298)")
+            .style("font-family", "Arial, sans-serif");
+        d3.selectAll(".boton-estandar")
+            .style("width", "80%")
+            .style("max-width", "400px")
+            .style("padding", "12px 20px")
+            .style("font-size", "clamp(14px, 2vw, 18px)")
+            .style("margin", "10px")
+            .style("border", "none")
+            .style("border-radius", "8px")
+            .style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
+            .style("color", "white")
+            .style("box-shadow", "0px 4px 6px rgba(0,0,0,0.1)")
+            .style("cursor", "pointer")
+            .style("transition", "all 0.3s ease-in-out")
+            .on("mouseover", function () {
+            d3.select(this).style("background", "linear-gradient(90deg, #feb47b, #ff7e5f)")
+                .style("transform", "scale(1.05)");
+        })
+            .on("mouseout", function () {
+            d3.select(this).style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
+                .style("transform", "scale(1)");
         });
     }
     app.ini = ini;
