@@ -70,7 +70,7 @@ var app;
             .style("align-items", "center")
             .style("justify-content", "center")
             .style("min-height", "100vh")
-            .style("background", "linear-gradient(45deg, #1e3c72, #2a5298)")
+            .style("background", "linear-gradient(45deg, #0f1e45, #2a5298)")
             .style("font-family", "Arial, sans-serif");
         d3.selectAll(".boton-estandar")
             .style("width", "80%")
@@ -86,11 +86,13 @@ var app;
             .style("cursor", "pointer")
             .style("transition", "all 0.3s ease-in-out")
             .on("mouseover", function () {
-            d3.select(this).style("background", "linear-gradient(90deg, #feb47b, #ff7e5f)")
+            d3.select(this)
+                .style("background", "linear-gradient(90deg, #feb47b, #ff7e5f)")
                 .style("transform", "scale(1.05)");
         })
             .on("mouseout", function () {
-            d3.select(this).style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
+            d3.select(this)
+                .style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
                 .style("transform", "scale(1)");
         });
     }

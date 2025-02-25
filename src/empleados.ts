@@ -15,10 +15,10 @@ namespace Empleados {
                 return;
             }
 
-            if (this.empleados.some(emp => emp.nombre.toLowerCase() === nombre.toLowerCase())) {
-                alert("El empleado ya existe.");
-                return;
-            }
+            // if (this.empleados.some(emp => emp.nombre.toLowerCase() === nombre.toLowerCase())) {
+            //     alert("El empleado ya existe.");
+            //     return;
+            // }
 
             this.empleados.push({ nombre, salarioMensual: salario });
             this.actualizarTabla(this.empleados);
@@ -31,10 +31,11 @@ namespace Empleados {
 
             this.actualizarTabla(this.empleados);
         }
+
         public calcularBonos(): void {
             this.empleados = this.empleados.map(empleado => ({
                 ...empleado,
-                bonoAnual: empleado.salarioAnual! * (empleado.salarioMensual > 15000 ? 0.10 : 0.05) 
+                bonoAnual: empleado.salarioAnual! * (empleado.salarioMensual > 15000 ? 0.10 : 0.05)
             }));
 
             this.actualizarTabla(this.empleados);
@@ -62,128 +63,157 @@ namespace Empleados {
                 .append("div")
                 .attr("id", "ventana-empleados")
                 .attr("class", "ventana")
-                .style("position", "absolute")
-                .style("top", "100px")
-                .style("left", "100px")
-                .style("width", "500px")
-                .style("background", "#fff")
+                .style("position", "fixed")
+                .style("top", "50%")
+                .style("left", "50%")
+                .style("transform", "translate(-50%, -50%)")
+                .style("width", "90%")
+                .style("max-width", "400px")
+                .style("max-height", "80vh")
+                .style("overflow", "auto")
+                .style("background", "#ffffff")
                 .style("border", "1px solid #ccc")
-                .style("border-radius", "8px")
-                .style("box-shadow", "4px 4px 10px rgba(0,0,0,0.2)")
+                .style("border-radius", "12px")
+                .style("box-shadow", "0px 8px 16px rgba(0,0,0,0.3)")
                 .style("padding", "20px")
-                .style("z-index", "1000");
+                .style("z-index", "1000")
+                .style("text-align", "center");
 
             ventana.append("button")
-                .text("X")
+                .text("✖")
                 .style("position", "absolute")
-                .style("top", "5px")
-                .style("right", "5px")
+                .style("top", "10px")
+                .style("right", "10px")
                 .style("border", "none")
                 .style("background", "transparent")
-                .style("font-size", "18px")
+                .style("font-size", "20px")
+                .style("color", "#333")
                 .style("cursor", "pointer")
+                .style("transition", "0.3s")
+                .on("mouseover", function () { d3.select(this).style("color", "red"); })
+                .on("mouseout", function () { d3.select(this).style("color", "#333"); })
                 .on("click", () => ventana.style("display", "none"));
 
             ventana.append("h2")
                 .text("Gestión de Empleados")
-                .style("text-align", "center")
-                .style("margin-top", "10px")
+                .style("font-size", "clamp(18px, 4vw, 24px)")
+                .style("margin-bottom", "15px")
                 .style("color", "#333");
 
-            const form = ventana.append("div")
-            .style("padding", "20px");
+            const contenido = ventana.append("div")
+                .style("padding", "10px");
 
-            form.append("label").text("Nombre: ");
-            form.append("input")
-                .attr("id", "nombre")
+            contenido.append("label")
+                .text("Nombre: ")
+                .style("font-size", "16px")
+                .style("display", "block")
+                .style("margin-bottom", "5px");
+
+            contenido.append("input")
                 .attr("type", "text")
-                .style("width", "100%");
+                .attr("id", "nombre")
+                .style("width", "100%")
+                .style("padding", "8px")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("font-size", "16px")
+                .style("margin-bottom", "10px");
 
-            form.append("br");
+            contenido.append("label")
+                .text("Salario Mensual: ")
+                .style("font-size", "16px")
+                .style("display", "block")
+                .style("margin-bottom", "5px");
 
-            form.append("label").text("Salario Mensual: ");
-            form.append("input")
-                .attr("id", "salario")
+            contenido.append("input")
                 .attr("type", "number")
-                .style("width", "100%");
-
-            form.append("br");
-            form.append("button")
-                .text("Agregar Empleado")
-                .style("margin-top", "10px")
-                .style("padding", "8px")
-                .style("cursor", "pointer")
+                .attr("id", "salario")
                 .style("width", "100%")
-                .on("click", () => {
-                    const nombre = (document.getElementById("nombre") as HTMLInputElement).value;
-                    const salario = parseFloat((document.getElementById("salario") as HTMLInputElement).value);
-                    this.agregarEmpleado(nombre, salario);
-                });
-
-            form.append("button")
-                .text("Calcular Sueldos Anuales")
-                .style("margin-top", "10px")
                 .style("padding", "8px")
-                .style("cursor", "pointer")
-                .style("width", "100%")
-                .on("click", () => this.calcularSueldosAnuales());
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("font-size", "16px")
+                .style("margin-bottom", "10px");
 
-            form.append("button")
-                .text("Calcular Bonos Anuales")
-                .style("margin-top", "10px")
-                .style("padding", "8px")
-                .style("cursor", "pointer")
-                .style("width", "100%")
-                .on("click", () => this.calcularBonos());
+            const botones = [
+                {
+                    texto: "Agregar Empleado",
+                    accion: () => this.agregarEmpleado((
+                        document.getElementById("nombre") as HTMLInputElement).value,
+                        parseFloat((document.getElementById("salario") as HTMLInputElement).value
+                        ))
+                },
+                { texto: "Calcular Sueldos Anuales", accion: () => this.calcularSueldosAnuales() },
+                { texto: "Calcular Bonos Anuales", accion: () => this.calcularBonos() },
+                { texto: "Filtrar +15,000", accion: () => this.filtrarEmpleados() },
+                { texto: "Total Sueldos", accion: () => this.calcularTotalSueldos() }
+            ];
 
-            form.append("button")
-                .text("Filtrar +15,000")
-                .style("margin-top", "10px")
-                .style("padding", "8px")
-                .style("cursor", "pointer")
-                .style("width", "100%")
-                 .on("click", () => this.filtrarEmpleados());
+            botones.forEach(btn => {
+                contenido.append("button")
+                    .text(btn.texto)
+                    .style("width", "100%")
+                    .style("margin-top", "10px")
+                    .style("padding", "10px")
+                    .style("border", "none")
+                    .style("border-radius", "6px")
+                    .style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
+                    .style("color", "white")
+                    .style("font-size", "16px")
+                    .style("cursor", "pointer")
+                    .style("transition", "0.3s")
+                    .on("click", btn.accion);
+            });
 
-            ventana.append("table")
+            const tablaWrapper = contenido.append("div")
+                .style("max-height", "200px")
+                .style("overflow-y", "auto")
+                .style("margin-top", "20px");
+
+            tablaWrapper.append("table")
                 .attr("id", "tabla-empleados")
                 .style("width", "100%")
-                .style("margin-top", "20px")
-                .style("border", "1px solid black");
+                .style("border-collapse", "collapse")
+                .style("border", "1px solid #000");
 
             this.actualizarTabla(this.empleados);
         }
 
         private actualizarTabla(empleados: Empleado[] = this.empleados): void {
             const tabla = d3.select("#tabla-empleados");
+            tabla.html("");
 
-            if (tabla.select("thead").empty()) {
-                tabla.append("thead").append("tr")
-                    .selectAll("th")
-                    .data(["Nombre", "Salario Mensual", "Salario Anual", "Bono Anual"]) 
-                    .enter()
-                    .append("th")
-                    .style("border-bottom", "2px solid #ddd")
+            const thead = tabla.append("thead").append("tr");
+            ["Nombre", "Salario Mensual", "Salario Anual", "Bono Anual"].forEach(text => {
+                thead.append("th")
+                    .style("border", "1px solid black")
                     .style("padding", "8px")
-                    .text(d => d);
+                    .style("background", "#ff7e5f")
+                    .style("color", "white")
+                    .text(text);
+            });
 
-                tabla.append("tbody").attr("id", "tbody-empleados");
-            }
+            const tbody = tabla.append("tbody");
 
-            const tbody = d3.select("#tbody-empleados");
-
-            const rows = tbody.selectAll("tr")
-                .data(empleados, (d: Empleado) => d.nombre);
-
-            const newRows = rows.enter().append("tr");
-
-            newRows.append("td").text(d => d.nombre);
-            newRows.append("td").text(d => d.salarioMensual);
-            newRows.append("td").text(d => d.salarioAnual ?? "");
-            newRows.append("td").text(d => d.bonoAnual ?? ""); 
-            rows.select("td:nth-child(3)").text(d => d.salarioAnual ?? "");
-            rows.select("td:nth-child(4)").text(d => d.bonoAnual ?? "");
-
-            rows.exit().remove();
+            empleados.forEach(emp => {
+                const row = tbody.append("tr");
+                row.append("td")
+                    .text(emp.nombre)
+                    .style("border", "1px solid black")
+                    .style("padding", "8px");
+                row.append("td")
+                    .text(emp.salarioMensual)
+                    .style("border", "1px solid black")
+                    .style("padding", "8px");
+                row.append("td")
+                    .text(emp.salarioAnual ?? "")
+                    .style("border", "1px solid black")
+                    .style("padding", "8px");
+                row.append("td")
+                    .text(emp.bonoAnual ?? "")
+                    .style("border", "1px solid black")
+                    .style("padding", "8px");
+            });
         }
     }
 }
