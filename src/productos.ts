@@ -28,7 +28,6 @@ namespace Tienda {
                 return;
             }
             this.productos.set(id, { id, nombre, categoria, precio, stock });
-            // console.log(this.productos);
             this.actualizarTabla();
         }
 
@@ -39,6 +38,10 @@ namespace Tienda {
             }
             this.productos.delete(id);
             this.actualizarTabla();
+        }
+
+        public buscarPorCategoria(categoria: string): void {
+            this.actualizarTabla(categoria);
         }
 
         public crearUI(): void {
@@ -135,6 +138,63 @@ namespace Tienda {
                     this.agregarProducto(id, nombre, categoria, precio, stock);
                 });
 
+            const buscarWrapper = form.append("div")
+                .attr("class", "search-container")
+                .style("position", "relative")
+                .style("width", "100%")
+                .style("max-width", "300px")
+                .style("margin", "0 auto 15px")
+                .style("margin-top", "15px");
+
+            buscarWrapper.append("input")
+                .attr("id", "buscar-categoria")
+                .attr("type", "text")
+                .attr("placeholder", "Buscar por categoría...")
+                .style("width", "100%")
+                .style("padding", "8px 35px 8px 10px") // Espacio para la lupa
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("font-size", "16px");
+
+            const svg = buscarWrapper.append("svg")
+                .attr("class", "search-icon")
+                .attr("viewBox", "0 0 24 24")
+                .attr("width", "20px")
+                .attr("height", "20px")
+                .style("position", "absolute")
+                .style("right", "10px")
+                .style("top", "50%")
+                .style("transform", "translateY(-50%)")
+                .style("cursor", "pointer"); // Ahora es clickeable
+
+            // Lente de la lupa
+            svg.append("circle")
+                .attr("cx", 11)
+                .attr("cy", 11)
+                .attr("r", 8)
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .attr("fill", "none");
+
+            // Mango de la lupa
+            svg.append("line")
+                .attr("x1", 16)
+                .attr("y1", 16)
+                .attr("x2", 22)
+                .attr("y2", 22)
+                .attr("stroke", "black")
+                .attr("stroke-width", 2);
+            svg.on("click", () => {
+                const categoria = (document.getElementById("buscar-categoria") as HTMLInputElement).value;
+                this.buscarPorCategoria(categoria);
+            });
+            d3.select("#buscar-categoria")
+                .on("input", () => {
+                    const categoria = (document.getElementById("buscar-categoria") as HTMLInputElement).value;
+                    this.buscarPorCategoria(categoria); // Llama a la función en tiempo real
+                });
+
+
             const tablaWrapper = ventana.append("div")
                 .style("max-height", "300px")
                 .style("overflow-y", "auto")
@@ -144,65 +204,48 @@ namespace Tienda {
                 .style("border-radius", "6px")
                 .style("background", "#fff");
 
-            const tabla = tablaWrapper.append("table")
+            tablaWrapper.append("table")
                 .attr("id", "tabla-productos")
                 .attr("class", "tabla")
                 .style("width", "100%")
-                .style("border-collapse", "collapse")
-                .style("border", "1px solid black");
+                .style("border-collapse", "collapse");
 
             this.actualizarTabla();
         }
 
-        private actualizarTabla(): void {
+        private actualizarTabla(categoriaFiltro: string = ""): void {
             const tabla = d3.select("#tabla-productos");
             tabla.html("");
 
             const thead = tabla.append("thead").append("tr");
-            ["ID", "Nombre", "Categoría", "Precio", "Stock", "Acciones"].forEach(text => {
-                thead.append("th")
-                    .style("border", "1px solid black")
-                    .style("padding", "10px")
-                    .style("background", "#ff7e5f")
-                    .style("color", "white")
-                    .style("font-size", "14px")
-                    .text(text);
-            });
+            ["ID", "Nombre", "Categoría", "Precio", "Stock", "Acciones"]
+                .forEach(text => {
+                    thead.append("th")
+                        .text(text)
+                        .style("padding", "10px")
+                        .style("background", "#ff7e5f")
+                        .style("color", "white");
+                });
 
             const tbody = tabla.append("tbody");
 
             this.productos.forEach(producto => {
-                const row = tbody.append("tr");
-                row.append("td").text(producto.id)
-                    .style("border", "1px solid black")
-                    .style("padding", "8px");
-                row.append("td")
-                    .text(producto.nombre)
-                    .style("border", "1px solid black")
-                    .style("padding", "8px");
-                row.append("td")
-                    .text(producto.categoria)
-                    .style("border", "1px solid black")
-                    .style("padding", "8px");
-                row.append("td")
-                    .text(`$${producto.precio}`)
-                    .style("border", "1px solid black")
-                    .style("padding", "8px");
-                row.append("td")
-                    .text(producto.stock)
-                    .style("border", "1px solid black")
-                    .style("padding", "8px");
+                // 🔹 Ahora filtra correctamente permitiendo coincidencias parciales
+                if (categoriaFiltro && !producto.categoria.toLowerCase().includes(categoriaFiltro.toLowerCase()))
+                    return;
 
-                row.append("td").append("button")
+                const row = tbody.append("tr");
+                row.append("td").text(producto.id);
+                row.append("td").text(producto.nombre);
+                row.append("td").text(producto.categoria);
+                row.append("td").text(`$${producto.precio}`);
+                row.append("td").text(producto.stock);
+                row.append("td")
+                    .append("button")
                     .text("Eliminar")
-                    .style("padding", "6px")
-                    .style("border", "none")
-                    .style("background", "red")
-                    .style("color", "white")
-                    .style("cursor", "pointer")
-                    .style("border-radius", "4px")
                     .on("click", () => this.eliminarProducto(producto.id));
             });
         }
+
     }
 }
