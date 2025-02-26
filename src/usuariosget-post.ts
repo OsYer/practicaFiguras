@@ -10,153 +10,191 @@ namespace CRUD {
         private apiUrl: string = "http://localhost:3000/usuarios";
 
         public mostrarVentana(): void {
-            d3.select("#ventana-usuarios").remove();
+            let ventana = d3.select("#ventana-usuarios");
+            if (!ventana.empty()) {
+                ventana.style("display", "block");
+                return;
+            }
 
-            const ventana = d3.select("body")
+            ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-usuarios")
                 .attr("class", "ventana")
-                .style("position", "absolute")
-                .style("top", "100px")
-                .style("left", "100px")
-                .style("width", "450px")
-                .style("background", "#fff")
+                .style("position", "fixed")
+                .style("top", "50%")
+                .style("left", "50%")
+                .style("transform", "translate(-50%, -50%)")
+                .style("width", "90%")
+                .style("max-width", "500px")
+                .style("max-height", "90vh")
+                .style("overflow", "auto")
+                .style("background", "#ffffff")
                 .style("border", "1px solid #ccc")
-                .style("border-radius", "8px")
-                .style("box-shadow", "4px 4px 10px rgba(0,0,0,0.2)")
+                .style("border-radius", "12px")
+                .style("box-shadow", "0px 8px 16px rgba(0,0,0,0.3)")
                 .style("padding", "20px")
-                .style("z-index", "1000");
+                .style("z-index", "1000")
+                .style("text-align", "center");
 
             ventana.append("button")
-                .text("X")
+                .text("✖")
+                .attr("class", "cerrar-ventana")
                 .style("position", "absolute")
-                .style("top", "5px")
-                .style("right", "5px")
+                .style("top", "10px")
+                .style("right", "10px")
                 .style("border", "none")
                 .style("background", "transparent")
-                .style("font-size", "18px")
+                .style("font-size", "20px")
+                .style("color", "#333")
                 .style("cursor", "pointer")
-                .on("click", () => d3.select("#ventana-usuarios").remove());
+                .style("transition", "0.3s")
+                .on("mouseover", function () { d3.select(this).style("color", "red"); })
+                .on("mouseout", function () { d3.select(this).style("color", "#333"); })
+                .on("click", () => ventana.style("display", "none"));
 
             ventana.append("h2")
-                .text("Lista de Usuarios")
-                .style("text-align", "center")
-                .style("margin-top", "10px")
+                .text("Gestión de Usuarios")
+                .attr("class", "titulo-ventana")
+                .style("font-size", "clamp(18px, 4vw, 24px)")
+                .style("margin-bottom", "15px")
                 .style("color", "#333");
 
-            const formulario = ventana.append("div")
-                .style("margin-bottom", "20px");
+            const contenido = ventana.append("div")
+                .attr("class", "contenido-ventana")
+                .style("display", "flex")
+                .style("flex-direction", "column")
+                .style("height", "100%");
 
-            formulario.append("label").text("Nombre:");
-            const inputNombre = formulario.append("input")
-                .attr("type", "text")
-                .attr("id", "nombre")
-                .style("margin", "5px")
-                .style("width", "100%");
-            formulario.append("br");
+            const agregarCampo = (label: string, id: string, type: string) => {
+                const campo = contenido.append("div").attr("class", "campo");
+                campo.append("label").text(label).attr("class", "label-campo");
+                campo.append("input")
+                    .attr("type", type)
+                    .attr("id", id)
+                    .attr("class", "input-campo")
+                    .style("width", "100%")
+                    .style("padding", "8px")
+                    .style("border", "1px solid #ccc")
+                    .style("border-radius", "6px")
+                    .style("font-size", "16px")
+                    .style("margin-bottom", "10px");
+            };
 
-            formulario.append("label").text("Email:");
-            const inputEmail = formulario.append("input")
-                .attr("type", "email")
-                .attr("id", "email")
-                .style("margin", "5px")
-                .style("width", "100%");
-            ;
-            formulario.append("br");
+            agregarCampo("Nombre:", "nombre", "text");
+            agregarCampo("Email:", "email", "email");
+            agregarCampo("Teléfono:", "telefono", "text");
 
-            formulario.append("label").text("Teléfono:");
-            const inputTelefono = formulario.append("input")
-                .attr("type", "text")
-                .attr("id", "telefono")
-                .style("margin", "5px")
-                .style("width", "100%");
-
-                formulario.append("br");
-
-            formulario.append("button")
+            contenido.append("button")
                 .text("Agregar Usuario")
-                .style("cursor", "pointer")
-                .style("background", "green")
-                .style("color", "white")
-                .style("padding", "8px")
-                .style("border", "none")
-                .style("border-radius", "4px")
-                .on("click", () => {
-                    this.agregarUsuario(
-                        inputNombre.property("value"),
-                        inputEmail.property("value"),
-                        inputTelefono.property("value")
-                    );
-                });
-            formulario.append("br");
-
-            const tabla = ventana.append("table")
+                .attr("class", "boton-agregar")
                 .style("width", "100%")
+                .style("padding", "10px")
+                .style("border", "none")
+                .style("border-radius", "6px")
+                .style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
+                .style("color", "white")
+                .style("font-size", "16px")
+                .style("cursor", "pointer")
+                .style("transition", "0.3s")
+                .on("click", () => {
+                    this.agregarUsuario();
+                });
+            const tablaWrapper = contenido.append("div")
+                .style("flex-grow", "1")
+                .style("max-height", "50vh")
+                .style("overflow-y", "auto")
+                .style("overflow-x", "auto")
+                .style("width", "100%")
+                .style("margin-top", "20px")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("background", "#fff");
+
+            const tabla = tablaWrapper.append("table")
+                .attr("id", "tabla-usuarios")
+                .attr("class", "tabla")
+                .style("width", "100%")
+                .style("min-width", "500px")
                 .style("border-collapse", "collapse")
-                .style("margin-top", "10px");
-
-            const thead = tabla.append("thead");
-            thead.append("tr")
-                .selectAll("th")
-                .data(["Nombre", "Email", "Teléfono"])
-                .enter()
-                .append("th")
-                .style("border-bottom", "2px solid #ddd")
-                .style("padding", "8px")
-                .text(d => d);
-
-            tabla.append("tbody").attr("id", "tabla-usuarios");
+                .style("table-layout", "fixed")
+                .style("border", "1px solid #000");
 
             this.cargarUsuarios();
         }
+        private agregarUsuario(): void {
+            const nombre = (document.getElementById("nombre") as HTMLInputElement).value;
+            const email = (document.getElementById("email") as HTMLInputElement).value;
+            const telefono = (document.getElementById("telefono") as HTMLInputElement).value;
 
-        private cargarUsuarios(): void {
-            fetch(this.apiUrl)
-                .then(response => response.json())
-                .then((data: Usuario[]) => {
-                    console.log("Usuarios obtenidos:", data);
-
-                    const tbody = d3.select("#tabla-usuarios");
-                    tbody.html("");
-
-                    const rows = tbody.selectAll("tr")
-                        .data(data, (d: Usuario) => d.id)
-                        .enter()
-                        .append("tr");
-
-                    rows.append("td").text((d: Usuario) => d.nombre);
-                    rows.append("td").text((d: Usuario) => d.email);
-                    rows.append("td").text((d: Usuario) => d.telefono);
-                })
-                .catch(error => console.error("Error al obtener usuarios:", error));
-        }
-
-        private agregarUsuario(nombre: string, email: string, telefono: string): void {
             if (!nombre || !email || !telefono) {
                 alert("Todos los campos son obligatorios.");
                 return;
             }
 
-            const nuevoUsuario = { nombre, email, telefono };
-
             fetch(this.apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(nuevoUsuario)
+                body: JSON.stringify({ nombre, email, telefono })
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Error al agregar usuario: ${response.statusText}`);
+                        return response.json().then(err => { throw new Error(err.mensaje); });
                     }
-                    return response.text();
+                    return response.json();
                 })
-                .then(mensaje => {
-                    console.log(mensaje); 
-                    alert("Usuario agregado correctamente.");
-                    this.cargarUsuarios(); 
+                .then(() => {
+                    alert("Usuario agregado exitosamente.");
+                    this.cargarUsuarios();
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    alert(error.message);
+                });
+        }
+
+
+        private cargarUsuarios(): void {
+            fetch(this.apiUrl)
+                .then(response => response.json())
+                .then((data: Usuario[]) => {
+                    const tabla = d3.select("#tabla-usuarios");
+                    tabla.html("");
+                    const thead = tabla.append("thead").append("tr");
+                    ["Nombre", "Email", "Teléfono"].forEach(text => {
+                        thead.append("th")
+                            .style("border", "1px solid black")
+                            .style("padding", "8px")
+                            .style("background", "#ff7e5f")
+                            .style("color", "white")
+                            .style("font-size", "14px")
+                            .text(text);
+                    });
+                    const tbody = tabla.append("tbody");
+                    data.forEach(usuario => {
+                        const row = tbody.append("tr");
+                        row.append("td")
+                            .style("border", "1px solid black")
+                            .style("padding", "8px")
+                            .style("font-size", "14px")
+                            .style("width", "20%")
+                            .style("word-wrap", "break-word")
+                            .text(usuario.nombre);
+                        row.append("td")
+                            .style("border", "1px solid black")
+                            .style("padding", "8px")
+                            .style("font-size", "14px")
+                            .style("width", "50%")
+                            .style("word-wrap", "break-word")
+                            .text(usuario.email);
+                        row.append("td")
+                            .style("border", "1px solid black")
+                            .style("padding", "8px")
+                            .style("font-size", "14px")
+                            .style("width", "10%")
+                            .style("word-wrap", "break-word")
+                            .text(usuario.telefono);
+                    });
+                })
+                .catch(error => console.error("Error al cargar usuarios:", error));
         }
     }
 }
- 
