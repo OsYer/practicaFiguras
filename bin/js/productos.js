@@ -127,7 +127,7 @@ var Tienda;
                 .attr("type", "text")
                 .attr("placeholder", "Buscar por categoría...")
                 .style("width", "100%")
-                .style("padding", "8px 35px 8px 10px") // Espacio para la lupa
+                .style("padding", "8px 35px 8px 10px")
                 .style("border", "1px solid #ccc")
                 .style("border-radius", "6px")
                 .style("font-size", "16px");
@@ -140,8 +140,7 @@ var Tienda;
                 .style("right", "10px")
                 .style("top", "50%")
                 .style("transform", "translateY(-50%)")
-                .style("cursor", "pointer"); // Ahora es clickeable
-            // Lente de la lupa
+                .style("cursor", "pointer");
             svg.append("circle")
                 .attr("cx", 11)
                 .attr("cy", 11)
@@ -149,7 +148,6 @@ var Tienda;
                 .attr("stroke", "black")
                 .attr("stroke-width", 2)
                 .attr("fill", "none");
-            // Mango de la lupa
             svg.append("line")
                 .attr("x1", 16)
                 .attr("y1", 16)
@@ -164,7 +162,7 @@ var Tienda;
             d3.select("#buscar-categoria")
                 .on("input", () => {
                 const categoria = document.getElementById("buscar-categoria").value;
-                this.buscarPorCategoria(categoria); // Llama a la función en tiempo real
+                this.buscarPorCategoria(categoria);
             });
             const tablaWrapper = ventana.append("div")
                 .style("max-height", "300px")
@@ -195,7 +193,6 @@ var Tienda;
             });
             const tbody = tabla.append("tbody");
             this.productos.forEach(producto => {
-                // 🔹 Ahora filtra correctamente permitiendo coincidencias parciales
                 if (categoriaFiltro && !producto.categoria.toLowerCase().includes(categoriaFiltro.toLowerCase()))
                     return;
                 const row = tbody.append("tr");
