@@ -23,6 +23,7 @@ namespace app {
             let empleados: Empleados.C_Empleados | null = null;
             let usuariosCrud: CRUD.Usuarios | null = null;
             let gestorProductos: Tienda.Productos | null = null;
+            let usuarios: Usuarios.UsuarioClase | null = null;
 
             d3.select("body")
                 .append("h2")
@@ -72,7 +73,7 @@ namespace app {
                 }
             });
 
-            this.agregarBoton("Gestión de productos con Map", () => {                
+            this.agregarBoton("Gestión de productos con Map", () => {
                 this.ocultarVentanas();
                 if (!gestorProductos) {
                     gestorProductos = new Tienda.Productos();
@@ -80,7 +81,16 @@ namespace app {
                 }
                 gestorProductos.crearUI();
             });
-
+            this.agregarBoton("Usuarios", () => {
+                this.ocultarVentanas();
+            
+                if (!usuarios) {
+                    usuarios = new Usuarios.UsuarioClase();
+                } else {
+                    usuarios.ventana.style("display", "block");
+                }
+            });
+            
             d3.select("body")
                 .style("display", "flex")
                 .style("flex-direction", "column")

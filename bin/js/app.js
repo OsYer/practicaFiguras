@@ -20,6 +20,7 @@ var app;
             let empleados = null;
             let usuariosCrud = null;
             let gestorProductos = null;
+            let usuarios = null;
             d3.select("body")
                 .append("h2")
                 .text("Menú de Prácticas")
@@ -74,6 +75,15 @@ var app;
                     console.log("Productos");
                 }
                 gestorProductos.crearUI();
+            });
+            this.agregarBoton("Usuarios", () => {
+                this.ocultarVentanas();
+                if (!usuarios) {
+                    usuarios = new Usuarios.UsuarioClase();
+                }
+                else {
+                    usuarios.ventana.style("display", "block");
+                }
             });
             d3.select("body")
                 .style("display", "flex")
