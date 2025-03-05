@@ -1,6 +1,9 @@
 var Figuras;
 (function (Figuras) {
     class Rectangulo {
+        constructor() {
+            this.crearUI();
+        }
         calcularArea(base, altura) {
             return base * altura;
         }
@@ -8,12 +11,12 @@ var Figuras;
             return 2 * (base + altura);
         }
         crearUI() {
-            let ventana = d3.select("#ventana-rectangulo");
+            // let ventana = d3.select("#ventana-rectangulo");
             // if (!ventana.empty()) {
             //     ventana.style("display", "block");
             //     return;
             // }
-            ventana = d3.select("body")
+            this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-rectangulo")
                 .attr("class", "ventana")
@@ -30,7 +33,7 @@ var Figuras;
                 .style("padding", "20px")
                 .style("z-index", "1000")
                 .style("text-align", "center");
-            ventana.append("button")
+            this.ventana.append("button")
                 .text("✖")
                 .style("position", "absolute")
                 .style("top", "10px")
@@ -43,20 +46,20 @@ var Figuras;
                 .style("transition", "0.3s")
                 .on("mouseover", function () { d3.select(this).style("color", "red"); })
                 .on("mouseout", function () { d3.select(this).style("color", "#333"); })
-                .on("click", () => ventana.style("display", "none"));
-            ventana.append("h2")
+                .on("click", () => this.ventana.style("display", "none"));
+            this.ventana.append("h2")
                 .text("Calculadora de Rectángulo")
                 .style("font-size", "clamp(18px, 4vw, 24px)")
                 .style("margin-bottom", "15px")
                 .style("color", "#333");
-            const contenido = ventana.append("div")
+            const contenido = this.ventana.append("div")
                 .style("padding", "10px");
             contenido.append("label")
                 .text("Base: ")
                 .style("font-size", "16px")
                 .style("display", "block")
                 .style("margin-bottom", "5px");
-            contenido.append("input")
+            this.inputBase = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "base")
                 .style("width", "100%")
@@ -71,7 +74,7 @@ var Figuras;
                 .style("display", "block")
                 .style("margin-top", "10px")
                 .style("margin-bottom", "5px");
-            contenido.append("input")
+            this.inputAltura = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "altura")
                 .style("width", "100%")
@@ -116,8 +119,8 @@ var Figuras;
                 .style("border", "1px solid #000");
         }
         realizarCalculo() {
-            const base = parseFloat(document.getElementById("base").value);
-            const altura = parseFloat(document.getElementById("altura").value);
+            const base = parseFloat(this.inputBase.property("value"));
+            const altura = parseFloat(this.inputAltura.property("value"));
             if (isNaN(base) || isNaN(altura) || base <= 0 || altura <= 0) {
                 alert("Por favor, ingrese valores válidos.");
                 return;

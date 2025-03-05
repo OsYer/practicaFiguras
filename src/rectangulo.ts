@@ -1,5 +1,13 @@
 namespace Figuras {
     export class Rectangulo {
+        inputBase: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        inputAltura: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        ventana: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>;
+
+        constructor() {
+            this.crearUI();
+        }
+
         public calcularArea(base: number, altura: number): number {
             return base * altura;
         }
@@ -9,14 +17,13 @@ namespace Figuras {
         }
 
         public crearUI(): void {
-            let ventana = d3.select("#ventana-rectangulo");
+            // let ventana = d3.select("#ventana-rectangulo");
 
             // if (!ventana.empty()) {
             //     ventana.style("display", "block");
             //     return;
             // }
-
-            ventana = d3.select("body")
+            this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-rectangulo")
                 .attr("class", "ventana")
@@ -34,7 +41,7 @@ namespace Figuras {
                 .style("z-index", "1000")
                 .style("text-align", "center");
 
-            ventana.append("button")
+            this.ventana.append("button")
                 .text("✖")
                 .style("position", "absolute")
                 .style("top", "10px")
@@ -47,16 +54,16 @@ namespace Figuras {
                 .style("transition", "0.3s")
                 .on("mouseover", function () { d3.select(this).style("color", "red"); })
                 .on("mouseout", function () { d3.select(this).style("color", "#333"); })
-                .on("click", () => ventana.style("display", "none"));
+                .on("click", () => this.ventana.style("display", "none"));
 
-            ventana.append("h2")
+            this.ventana.append("h2")
                 .text("Calculadora de Rectángulo")
                 .style("font-size", "clamp(18px, 4vw, 24px)")
                 .style("margin-bottom", "15px")
                 .style("color", "#333");
 
-            const contenido = ventana.append("div")
-            .style("padding", "10px");
+            const contenido = this.ventana.append("div")
+                .style("padding", "10px");
 
             contenido.append("label")
                 .text("Base: ")
@@ -64,7 +71,7 @@ namespace Figuras {
                 .style("display", "block")
                 .style("margin-bottom", "5px");
 
-            contenido.append("input")
+            this.inputBase = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "base")
                 .style("width", "100%")
@@ -81,7 +88,7 @@ namespace Figuras {
                 .style("margin-top", "10px")
                 .style("margin-bottom", "5px");
 
-            contenido.append("input")
+            this.inputAltura = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "altura")
                 .style("width", "100%")
@@ -130,8 +137,8 @@ namespace Figuras {
         }
 
         private realizarCalculo(): void {
-            const base = parseFloat((document.getElementById("base") as HTMLInputElement).value);
-            const altura = parseFloat((document.getElementById("altura") as HTMLInputElement).value);
+            const base = parseFloat(this.inputBase.property("value"));
+            const altura = parseFloat(this.inputAltura.property("value"));
 
             if (isNaN(base) || isNaN(altura) || base <= 0 || altura <= 0) {
                 alert("Por favor, ingrese valores válidos.");

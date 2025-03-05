@@ -1,6 +1,9 @@
 var Figuras;
 (function (Figuras) {
     class Cuadrado {
+        constructor() {
+            this.crearUI();
+        }
         calcularArea(lado) {
             return lado * lado;
         }
@@ -8,12 +11,13 @@ var Figuras;
             return 4 * lado;
         }
         crearUI() {
-            let ventana = d3.select("#ventana-cuadrado");
-            // if (!ventana.empty()) {
-            //     ventana.style("display", "block");
-            //     return;
-            // }
-            ventana = d3.select("body")
+            this.ventana = d3.select("#ventana-cuadrado");
+            // Si la ventana ya existe, solo la mostramos
+            if (!this.ventana.empty()) {
+                this.ventana.style("display", "block");
+                return;
+            }
+            this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-cuadrado")
                 .attr("class", "ventana")
@@ -30,7 +34,7 @@ var Figuras;
                 .style("padding", "20px")
                 .style("z-index", "1000")
                 .style("text-align", "center");
-            ventana.append("button")
+            this.ventana.append("button")
                 .text("X")
                 .style("position", "absolute")
                 .style("top", "10px")
@@ -40,23 +44,21 @@ var Figuras;
                 .style("font-size", "20px")
                 .style("color", "#333")
                 .style("cursor", "pointer")
-                .style("transition", "0.3s")
-                .on("mouseover", function () { d3.select(this).style("color", "red"); })
-                .on("mouseout", function () { d3.select(this).style("color", "#333"); })
-                .on("click", () => ventana.style("display", "none"));
-            ventana.append("h2")
+                .on("click", () => this.ventana.style("display", "none"));
+            this.ventana.append("h2")
                 .text("Calculadora de Cuadrado")
                 .style("font-size", "clamp(18px, 4vw, 24px)")
                 .style("margin-bottom", "15px")
                 .style("color", "#333");
-            const contenido = ventana.append("div")
+            const contenido = this.ventana
+                .append("div")
                 .style("padding", "10px");
             contenido.append("label")
                 .text("Lado: ")
                 .style("font-size", "16px")
                 .style("display", "block")
                 .style("margin-bottom", "5px");
-            contenido.append("input")
+            this.inputLado = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "lado")
                 .style("width", "100%")
@@ -76,18 +78,6 @@ var Figuras;
                 .style("color", "white")
                 .style("font-size", "16px")
                 .style("cursor", "pointer")
-                .style("transition", "0.3s")
-                .style("box-shadow", "0px 4px 6px rgba(0,0,0,0.1)")
-                .on("mouseover", function () {
-                d3.select(this)
-                    .style("background", "linear-gradient(90deg, #feb47b, #ff7e5f)")
-                    .style("transform", "scale(1.05)");
-            })
-                .on("mouseout", function () {
-                d3.select(this)
-                    .style("background", "linear-gradient(90deg, #ff7e5f, #feb47b)")
-                    .style("transform", "scale(1)");
-            })
                 .on("click", () => this.realizarCalculo());
             contenido.append("p")
                 .attr("id", "resultado-cuadrado")
@@ -96,29 +86,32 @@ var Figuras;
                 .style("color", "#555");
             contenido.append("svg")
                 .attr("id", "cuadrado-svg")
-                .attr("width", "100%")
-                .attr("height", "200px")
+                .attr("width", 200)
+                .attr("height", 200)
                 .style("margin-top", "20px")
                 .style("border", "1px solid #000");
         }
         realizarCalculo() {
-            const lado = parseFloat(document.getElementById("lado").value);
+            const lado = parseFloat(this.inputLado.property("value"));
             if (isNaN(lado) || lado <= 0) {
                 alert("Por favor, ingrese un valor válido.");
                 return;
             }
             const area = this.calcularArea(lado);
             const perimetro = this.calcularPerimetro(lado);
-            d3.select("#resultado-cuadrado").html(`Área: ${area} - Perímetro: ${perimetro}`);
+            d3.select("#resultado-cuadrado").text(`Área: ${area} - Perímetro: ${perimetro}`);
             this.dibujarCuadrado(lado);
         }
         dibujarCuadrado(lado) {
             const svg = d3.select("#cuadrado-svg");
             svg.selectAll("*").remove();
+            const svgWidth = 200;
+            const svgHeight = 200;
+            const x = (svgWidth - lado) / 2;
+            const y = (svgHeight - lado) / 2;
             svg.append("rect")
-                .attr("x", "50%")
-                .attr("y", "50%")
-                .attr("transform", "translate(-50%, -50%)")
+                .attr("x", x)
+                .attr("y", y)
                 .attr("width", lado)
                 .attr("height", lado)
                 .attr("fill", "green")

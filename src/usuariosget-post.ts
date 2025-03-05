@@ -7,16 +7,24 @@ namespace CRUD {
     }
 
     export class Usuarios {
+        ventana: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>;
+        inputNombre: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        inputEmail: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        inputTelefono: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+
         private apiUrl: string = "http://localhost:3000/usuarios";
+        constructor() {
+            this.mostrarVentana();
+        }
 
         public mostrarVentana(): void {
-            let ventana = d3.select("#ventana-usuarios");
-            if (!ventana.empty()) {
-                ventana.style("display", "block");
+            this.ventana = d3.select("#ventana-usuarios");
+            if (!this.ventana.empty()) {
+                this.ventana.style("display", "block");
                 return;
             }
 
-            ventana = d3.select("body")
+            this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-usuarios")
                 .attr("class", "ventana")
@@ -36,7 +44,7 @@ namespace CRUD {
                 .style("z-index", "1000")
                 .style("text-align", "center");
 
-            ventana.append("button")
+            this.ventana.append("button")
                 .text("✖")
                 .attr("class", "cerrar-ventana")
                 .style("position", "absolute")
@@ -50,39 +58,49 @@ namespace CRUD {
                 .style("transition", "0.3s")
                 .on("mouseover", function () { d3.select(this).style("color", "red"); })
                 .on("mouseout", function () { d3.select(this).style("color", "#333"); })
-                .on("click", () => ventana.style("display", "none"));
+                .on("click", () => this.ventana.style("display", "none"));
 
-            ventana.append("h2")
+            this.ventana.append("h2")
                 .text("Gestión de Usuarios")
                 .attr("class", "titulo-ventana")
                 .style("font-size", "clamp(18px, 4vw, 24px)")
                 .style("margin-bottom", "15px")
                 .style("color", "#333");
 
-            const contenido = ventana.append("div")
+            const contenido = this.ventana.append("div")
                 .attr("class", "contenido-ventana")
                 .style("display", "flex")
                 .style("flex-direction", "column")
                 .style("height", "100%");
+            contenido.append("label")
+                .text("Nombre:");
+            this.inputNombre = contenido.append("input")
+                .attr("type", "text")
+                .attr("class", "input-campo")
+                .attr("id", "nombre")
+                .style("width", "100%");
 
-            const agregarCampo = (label: string, id: string, type: string) => {
-                const campo = contenido.append("div").attr("class", "campo");
-                campo.append("label").text(label).attr("class", "label-campo");
-                campo.append("input")
-                    .attr("type", type)
-                    .attr("id", id)
-                    .attr("class", "input-campo")
-                    .style("width", "100%")
-                    .style("padding", "8px")
-                    .style("border", "1px solid #ccc")
-                    .style("border-radius", "6px")
-                    .style("font-size", "16px")
-                    .style("margin-bottom", "10px");
-            };
+            contenido.append("label").text("Email:");
+            this.inputEmail = contenido.append("input")
+                .attr("type", "email")
+                .attr("class", "input-campo")
+                .attr("id", "email")
+                .style("width", "100%");
 
-            agregarCampo("Nombre:", "nombre", "text");
-            agregarCampo("Email:", "email", "email");
-            agregarCampo("Teléfono:", "telefono", "text");
+            contenido.append("label").text("Teléfono:");
+            this.inputTelefono = contenido.append("input")
+                .attr("type", "text")
+                .attr("class", "input-campo")
+                .attr("id", "telefono")
+                .style("width", "100%");
+
+            d3.selectAll(".input-campo")
+                .style("width", "100%")
+                .style("padding", "8px")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("font-size", "16px")
+                .style("margin-bottom", "10px");
 
             contenido.append("button")
                 .text("Agregar Usuario")
@@ -122,9 +140,9 @@ namespace CRUD {
             this.cargarUsuarios();
         }
         private agregarUsuario(): void {
-            const nombre = (document.getElementById("nombre") as HTMLInputElement).value;
-            const email = (document.getElementById("email") as HTMLInputElement).value;
-            const telefono = (document.getElementById("telefono") as HTMLInputElement).value;
+            const nombre = this.inputNombre.property("value");
+            const email = this.inputEmail.property("value");
+            const telefono = this.inputTelefono.property("value");
 
             if (!nombre || !email || !telefono) {
                 alert("Todos los campos son obligatorios.");

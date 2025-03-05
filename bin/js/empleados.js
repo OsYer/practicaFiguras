@@ -1,8 +1,9 @@
 var Empleados;
 (function (Empleados) {
-    class clsEmpleados {
+    class C_Empleados {
         constructor() {
             this.empleados = [];
+            this.crearUI();
         }
         agregarEmpleado(nombre, salario) {
             if (!nombre || isNaN(salario) || salario <= 0) {
@@ -35,12 +36,12 @@ var Empleados;
             alert(`El total de sueldos mensuales es: ${total}`);
         }
         crearUI() {
-            let ventana = d3.select("#ventana-empleados");
-            if (!ventana.empty()) {
-                ventana.style("display", "block");
+            this.ventana = d3.select("#ventana-empleados");
+            if (!this.ventana.empty()) {
+                this.ventana.style("display", "block");
                 return;
             }
-            ventana = d3.select("body")
+            this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-empleados")
                 .attr("class", "ventana")
@@ -59,7 +60,7 @@ var Empleados;
                 .style("padding", "20px")
                 .style("z-index", "1000")
                 .style("text-align", "center");
-            ventana.append("button")
+            this.ventana.append("button")
                 .text("✖")
                 .style("position", "absolute")
                 .style("top", "10px")
@@ -72,20 +73,20 @@ var Empleados;
                 .style("transition", "0.3s")
                 .on("mouseover", function () { d3.select(this).style("color", "red"); })
                 .on("mouseout", function () { d3.select(this).style("color", "#333"); })
-                .on("click", () => ventana.style("display", "none"));
-            ventana.append("h2")
+                .on("click", () => this.ventana.style("display", "none"));
+            this.ventana.append("h2")
                 .text("Gestión de Empleados")
                 .style("font-size", "clamp(18px, 4vw, 24px)")
                 .style("margin-bottom", "15px")
                 .style("color", "#333");
-            const contenido = ventana.append("div")
+            const contenido = this.ventana.append("div")
                 .style("padding", "10px");
             contenido.append("label")
                 .text("Nombre: ")
                 .style("font-size", "16px")
                 .style("display", "block")
                 .style("margin-bottom", "5px");
-            contenido.append("input")
+            this.inputNombre = contenido.append("input")
                 .attr("type", "text")
                 .attr("id", "nombre")
                 .style("width", "100%")
@@ -99,7 +100,7 @@ var Empleados;
                 .style("font-size", "16px")
                 .style("display", "block")
                 .style("margin-bottom", "5px");
-            contenido.append("input")
+            this.inputSalarioMensual = contenido.append("input")
                 .attr("type", "number")
                 .attr("id", "salario")
                 .style("width", "100%")
@@ -111,7 +112,7 @@ var Empleados;
             const botones = [
                 {
                     texto: "Agregar Empleado",
-                    accion: () => this.agregarEmpleado(document.getElementById("nombre").value, parseFloat(document.getElementById("salario").value))
+                    accion: () => this.agregarEmpleado(this.inputNombre.property("value"), parseFloat(this.inputSalarioMensual.property("value")))
                 },
                 { texto: "Calcular Sueldos Anuales", accion: () => this.calcularSueldosAnuales() },
                 { texto: "Calcular Bonos Anuales", accion: () => this.calcularBonos() },
@@ -179,6 +180,6 @@ var Empleados;
             });
         }
     }
-    Empleados.clsEmpleados = clsEmpleados;
+    Empleados.C_Empleados = C_Empleados;
 })(Empleados || (Empleados = {}));
 //# sourceMappingURL=empleados.js.map
