@@ -22,9 +22,8 @@ namespace app {
             let cuadrado: Figuras.Cuadrado | null = null;
             let empleados: Empleados.C_Empleados | null = null;
             let usuariosCrud: CRUD.Usuarios | null = null;
-            let productos: Tienda.Productos | null = null;
-            let uiProductos: Tienda.ProductosUI | null = null;
-            
+            let gestorProductos: Tienda.Productos | null = null;
+
             d3.select("body")
                 .append("h2")
                 .text("Menú de Prácticas")
@@ -75,13 +74,11 @@ namespace app {
 
             this.agregarBoton("Gestión de productos con Map", () => {                
                 this.ocultarVentanas();
-                if (!productos) {
-                    productos = new Tienda.Productos();
-                    uiProductos = new Tienda.ProductosUI(productos);
+                if (!gestorProductos) {
+                    gestorProductos = new Tienda.Productos();
                     console.log("Productos");
-                } else {
-                    d3.select("#ventana-productos").style("display", "block");
                 }
+                gestorProductos.crearUI();
             });
 
             d3.select("body")

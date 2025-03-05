@@ -19,8 +19,7 @@ var app;
             let cuadrado = null;
             let empleados = null;
             let usuariosCrud = null;
-            let productos = null;
-            let uiProductos = null;
+            let gestorProductos = null;
             d3.select("body")
                 .append("h2")
                 .text("Menú de Prácticas")
@@ -70,14 +69,11 @@ var app;
             });
             this.agregarBoton("Gestión de productos con Map", () => {
                 this.ocultarVentanas();
-                if (!productos) {
-                    productos = new Tienda.Productos();
-                    uiProductos = new Tienda.ProductosUI(productos);
+                if (!gestorProductos) {
+                    gestorProductos = new Tienda.Productos();
                     console.log("Productos");
                 }
-                else {
-                    d3.select("#ventana-productos").style("display", "block");
-                }
+                gestorProductos.crearUI();
             });
             d3.select("body")
                 .style("display", "flex")
