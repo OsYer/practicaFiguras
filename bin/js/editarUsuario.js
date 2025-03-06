@@ -7,7 +7,6 @@ var Usuarios;
             this.crearVentanaEdicion();
         }
         crearVentanaEdicion() {
-            // Eliminar ventana previa si existe
             d3.select("#ventana-edicion").remove();
             this.ventanaEdicion = d3.select("body")
                 .append("div")
@@ -26,7 +25,6 @@ var Usuarios;
                 .style("z-index", "1001");
             this.ventanaEdicion.append("h2").text("Editar Usuario");
             this.crearFormulario();
-            // Botón para guardar cambios
             this.ventanaEdicion.append("button")
                 .text("Guardar Cambios")
                 .style("margin-top", "10px")
@@ -37,7 +35,6 @@ var Usuarios;
                 .style("border-radius", "5px")
                 .style("cursor", "pointer")
                 .on("click", () => this.guardarCambios());
-            // Botón para cerrar/cancelar
             this.ventanaEdicion.append("button")
                 .text("Cancelar")
                 .style("margin-left", "10px")
@@ -74,14 +71,13 @@ var Usuarios;
             });
         }
         guardarCambios() {
-            // Recuperar los valores de los inputs
             this.usuario.nombre = this.inputNombre.property("value");
             this.usuario.apellidoPaterno = this.inputApellidoPaterno.property("value");
             this.usuario.correo = this.inputCorreo.property("value");
             this.usuario.estado = this.inputEstado.property("value");
-            console.log("Usuario actualizado:", this.usuario); // Depuración
-            this.callbackGuardar(this.usuario); // Guardar cambios en `usuarios.ts`
-            this.ventanaEdicion.remove(); // Cerrar ventana
+            console.log("Usuario actualizado:", this.usuario);
+            this.callbackGuardar(this.usuario);
+            this.ventanaEdicion.remove();
         }
     }
     Usuarios.EditarUsuario = EditarUsuario;

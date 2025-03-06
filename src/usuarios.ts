@@ -262,7 +262,6 @@ namespace Usuarios {
 
             const acciones = filas.append("td");
 
-            // Botón de Editar
             acciones.append("button")
                 .text("Editar")
                 .style("margin-right", "5px")
@@ -274,7 +273,6 @@ namespace Usuarios {
                 .style("cursor", "pointer")
                 .on("click", (event, d) => this.editarUsuario(d.id));
 
-            // Botón de Eliminar
             acciones.append("button")
                 .text("Eliminar")
                 .style("padding", "5px 10px")
