@@ -6,6 +6,8 @@ namespace Usuarios {
 
         private inputNombre: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
         private inputApellidoPaterno: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputApellidoMaterno: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputEdad: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
         private inputCorreo: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
         private inputEstado: d3.Selection<HTMLSelectElement, unknown, HTMLElement, any>;
 
@@ -76,6 +78,16 @@ namespace Usuarios {
                 .attr("type", "text")
                 .property("value", this.usuario.apellidoPaterno);
 
+            form.append("label").text("Apellido Materno:");
+            this.inputApellidoMaterno = form.append("input")
+                .attr("type", "text")
+                .property("value", this.usuario.apellidoMaterno);
+
+            form.append("label").text("Edad:");
+            this.inputEdad = form.append("input")
+                .attr("type", "number")
+                .property("value", this.usuario.edad);
+
             form.append("label").text("Correo:");
             this.inputCorreo = form.append("input")
                 .attr("type", "email")
@@ -94,6 +106,8 @@ namespace Usuarios {
         private guardarCambios(): void {
             this.usuario.nombre = this.inputNombre.property("value");
             this.usuario.apellidoPaterno = this.inputApellidoPaterno.property("value");
+            this.usuario.apellidoMaterno = this.inputApellidoMaterno.property("value");
+            this.usuario.edad = Number(this.inputEdad.property("value"));
             this.usuario.correo = this.inputCorreo.property("value");
             this.usuario.estado = this.inputEstado.property("value");
 

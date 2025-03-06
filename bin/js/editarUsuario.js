@@ -58,6 +58,14 @@ var Usuarios;
             this.inputApellidoPaterno = form.append("input")
                 .attr("type", "text")
                 .property("value", this.usuario.apellidoPaterno);
+            form.append("label").text("Apellido Materno:");
+            this.inputApellidoMaterno = form.append("input")
+                .attr("type", "text")
+                .property("value", this.usuario.apellidoMaterno);
+            form.append("label").text("Edad:");
+            this.inputEdad = form.append("input")
+                .attr("type", "number")
+                .property("value", this.usuario.edad);
             form.append("label").text("Correo:");
             this.inputCorreo = form.append("input")
                 .attr("type", "email")
@@ -73,6 +81,8 @@ var Usuarios;
         guardarCambios() {
             this.usuario.nombre = this.inputNombre.property("value");
             this.usuario.apellidoPaterno = this.inputApellidoPaterno.property("value");
+            this.usuario.apellidoMaterno = this.inputApellidoMaterno.property("value");
+            this.usuario.edad = Number(this.inputEdad.property("value"));
             this.usuario.correo = this.inputCorreo.property("value");
             this.usuario.estado = this.inputEstado.property("value");
             console.log("Usuario actualizado:", this.usuario);
