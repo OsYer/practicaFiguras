@@ -13,13 +13,19 @@ namespace Usuarios {
     export class UsuarioClase {
         ventana: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>;
         private usuarios: Map<number, Usuario> = new Map();
-        private formatoFecha = d3.timeFormat("%d/%m/%Y %I:%M %p"); // Formato de fecha
+        private formatoFecha = d3.timeFormat("%d/%m/%Y %I:%M %p");
+
+        private inputNombre: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputApellidoPaterno: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputApellidoMaterno: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputEdad: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputCorreo: d3.Selection<HTMLInputElement, unknown, HTMLElement, any>;
+        private inputEstado: d3.Selection<HTMLSelectElement, unknown, HTMLElement, any>;
 
         constructor() {
             this.crearUI();
         }
 
-        // 🔹 Método para obtener los datos desde JSON y almacenarlos en el Map<>
         private async cargarUsuarios(): Promise<void> {
             try {
                 const response = await fetch("js/usuarios.json");
@@ -29,29 +35,30 @@ namespace Usuarios {
                     usuario.fechaRegistro = this.formatearFecha(usuario.fechaRegistro);
                     this.usuarios.set(usuario.id, usuario);
                 });
-
                 this.actualizarTabla();
             } catch (error) {
                 console.error("Error al cargar los datos:", error);
             }
         }
-
-        // 🔹 Método para formatear la fecha
+        private eliminarUsuario(id: number): void {
+            if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+                this.usuarios.delete(id);
+                this.actualizarTabla();
+            }
+        }
+        
         private formatearFecha(fecha: string): string {
             const fechaObjeto = new Date(fecha);
             return this.formatoFecha(fechaObjeto);
         }
 
-        // 🔹 Método para crear la ventana modal con la tabla y cargar datos
         private crearUI(): void {
             this.ventana = d3.select("#ventana-usuarios");
 
-            // Si la ventana ya existe, simplemente la mostramos
             if (!this.ventana.empty()) {
                 return;
             }
 
-            // Crear la ventana emergente
             this.ventana = d3.select("body")
                 .append("div")
                 .attr("id", "ventana-usuarios")
@@ -63,16 +70,15 @@ namespace Usuarios {
                 .style("width", "90%")
                 .style("max-width", "800px")
                 .style("max-height", "80vh")
-                .style("overflow", "hidden")
+                .style("overflow", "auto")
                 .style("background", "#ffffff")
                 .style("border", "1px solid #ccc")
                 .style("border-radius", "12px")
                 .style("box-shadow", "0px 8px 16px rgba(0,0,0,0.3)")
                 .style("padding", "20px")
                 .style("z-index", "1000")
-                .style("text-align", "center")
+                .style("text-align", "center");
 
-            // Botón de cerrar
             this.ventana.append("button")
                 .text("✖")
                 .style("position", "absolute")
@@ -95,7 +101,63 @@ namespace Usuarios {
                 .style("color", "#333")
                 .style("text-align", "center");
 
-            // Contenedor de la tabla con scroll interno
+            const inputContainer = this.ventana.append("div")
+                .style("display", "grid")
+                .style("gap", "10px")
+                .style("grid-template-columns", "1fr 1fr")
+                .style("margin-bottom", "15px").style("width", "100%");
+            ;
+
+            inputContainer.append("label")
+                .text("Nombre:").style("grid-column", "1")
+
+            this.inputNombre = inputContainer.append("input")
+                .attr("type", "text")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            inputContainer.append("label").text("Apellido Paterno:").style("grid-column", "1");
+            this.inputApellidoPaterno = inputContainer.append("input")
+                .attr("type", "text")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            inputContainer.append("label").text("Apellido Materno:").style("grid-column", "1");
+            this.inputApellidoMaterno = inputContainer.append("input")
+                .attr("type", "text")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            inputContainer.append("label").text("Edad:").style("grid-column", "1");
+            this.inputEdad = inputContainer.append("input")
+                .attr("type", "number")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            inputContainer.append("label").text("Correo:").style("grid-column", "1");
+            this.inputCorreo = inputContainer.append("input")
+                .attr("type", "email")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            inputContainer.append("label").text("Estado:").style("grid-column", "1");
+            this.inputEstado = inputContainer.append("select")
+                .attr("class", "input-estilizado").style("grid-column", "2");
+
+            this.inputEstado.selectAll("option")
+                .data(["Activo", "Inactivo", "Pendiente"])
+                .enter()
+                .append("option")
+                .text(d => d);
+
+            d3.selectAll(".input-estilizado")
+                .style("width", "100%")
+                .style("padding", "8px")
+                .style("font-size", "14px")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "6px")
+                .style("outline", "none")
+                .style("transition", "border-color 0.3s, box-shadow 0.3s");
+
+            this.ventana.append("button")
+                .text("Agregar Usuario")
+                .on("click", () => this.agregarUsuario());
+
             this.ventana.append("div")
                 .attr("id", "tabla-usuarios")
                 .style("padding", "10px")
@@ -107,22 +169,46 @@ namespace Usuarios {
             this.cargarUsuarios();
         }
 
-        // 🔹 Método para actualizar la tabla dentro de la ventana
+        private agregarUsuario(): void {
+            const nuevoUsuario: Usuario = {
+                id: this.usuarios.size + 1,
+                nombre: this.inputNombre.property("value"),
+                apellidoPaterno: this.inputApellidoPaterno.property("value"),
+                apellidoMaterno: this.inputApellidoMaterno.property("value"),
+                edad: Number(this.inputEdad.property("value")),
+                correo: this.inputCorreo.property("value"),
+                estado: this.inputEstado.property("value"),
+                fechaRegistro: this.formatoFecha(new Date())
+            };
+
+            if (!nuevoUsuario.nombre || !nuevoUsuario.correo) {
+                alert("Nombre y correo son obligatorios.");
+                return;
+            }
+
+            this.usuarios.set(nuevoUsuario.id, nuevoUsuario);
+            this.actualizarTabla();
+
+            this.inputNombre.property("value", "");
+            this.inputApellidoPaterno.property("value", "");
+            this.inputApellidoMaterno.property("value", "");
+            this.inputEdad.property("value", "");
+            this.inputCorreo.property("value", "");
+        }
+
         private actualizarTabla(): void {
             const contenedorTabla = d3.select("#tabla-usuarios");
             contenedorTabla.html("");
-
+        
             const tabla = contenedorTabla.append("table")
                 .attr("border", "1")
                 .style("width", "100%")
                 .style("border-collapse", "collapse")
                 .style("background", "#fff");
-
-            // Encabezados de la tabla
-            const encabezados = ["ID", "Nombre", "A. Paterno", "A. Materno", "Edad", "Correo", "Estado", "Registro"];
-            tabla.append("thead")
-                .append("tr")
-                .selectAll("th")
+        
+            const encabezados = ["ID", "Nombre", "A. Paterno", "A. Materno", "Edad", "Correo", "Estado", "Registro", "Acciones"];
+            
+            tabla.append("thead").append("tr").selectAll("th")
                 .data(encabezados)
                 .enter()
                 .append("th")
@@ -132,27 +218,30 @@ namespace Usuarios {
                 .style("border", "1px solid #ddd")
                 .style("font-weight", "bold")
                 .style("text-align", "center");
-
-            // Cuerpo de la tabla
+        
             const tbody = tabla.append("tbody");
             const usuariosArray = Array.from(this.usuarios.values());
-
-            const filas = tbody.selectAll("tr")
-                .data(usuariosArray)
-                .enter()
-                .append("tr")
+        
+            const filas = tbody.selectAll("tr").data(usuariosArray).enter().append("tr")
                 .style("border-bottom", "1px solid #ddd")
                 .style("background-color", (d, i) => i % 2 === 0 ? "#f9f9f9" : "#ffffff");
-
+        
             filas.selectAll("td")
                 .data(d => Object.values(d))
                 .enter()
                 .append("td")
-                .text(d => d)
-                .style("padding", "12px")
-                .style("border", "1px solid #ddd")
-                .style("text-align", "center")
-                .style("white-space", "nowrap");
+                .text(d => d);
+        
+            filas.append("td").append("button")
+                .text("❌ Eliminar")
+                .style("padding", "5px 10px")
+                .style("background", "#ff4d4d")
+                .style("color", "#fff")
+                .style("border", "none")
+                .style("border-radius", "5px")
+                .style("cursor", "pointer")
+                .on("click", (event, d) => this.eliminarUsuario(d.id));
         }
+        
     }
 }
