@@ -213,8 +213,21 @@ var Usuarios;
                 .enter()
                 .append("td")
                 .text(d => d);
-            filas.append("td").append("button")
-                .text("❌ Eliminar")
+            const acciones = filas.append("td");
+            // Botón de Editar
+            acciones.append("button")
+                .text("Editar")
+                .style("margin-right", "5px")
+                .style("padding", "5px 10px")
+                .style("background", "#ffc107")
+                .style("color", "#fff")
+                .style("border", "none")
+                .style("border-radius", "5px")
+                .style("cursor", "pointer")
+                .on("click", (event, d) => this.editarUsuario(d.id));
+            // Botón de Eliminar
+            acciones.append("button")
+                .text("Eliminar")
                 .style("padding", "5px 10px")
                 .style("background", "#ff4d4d")
                 .style("color", "#fff")
@@ -222,6 +235,15 @@ var Usuarios;
                 .style("border-radius", "5px")
                 .style("cursor", "pointer")
                 .on("click", (event, d) => this.eliminarUsuario(d.id));
+        }
+        editarUsuario(id) {
+            const usuario = this.usuarios.get(id);
+            if (!usuario)
+                return;
+            new Usuarios.EditarUsuario(usuario, (usuarioEditado) => {
+                this.usuarios.set(usuarioEditado.id, usuarioEditado);
+                this.actualizarTabla();
+            });
         }
     }
     Usuarios.UsuarioClase = UsuarioClase;
