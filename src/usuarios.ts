@@ -46,7 +46,20 @@ namespace Usuarios {
                 this.actualizarTabla();
             }
         }
-        
+        private filtrarUsuarios(texto: string): void {
+            const textoBusqueda = texto.toLowerCase();
+
+            const usuariosFiltrados = Array.from(this.usuarios.values()).filter(usuario =>
+                usuario.nombre.toLowerCase().includes(textoBusqueda) ||
+                usuario.apellidoPaterno.toLowerCase().includes(textoBusqueda) ||
+                usuario.apellidoMaterno.toLowerCase().includes(textoBusqueda) ||
+                usuario.correo.toLowerCase().includes(textoBusqueda) ||
+                usuario.estado.toLowerCase().includes(textoBusqueda)
+            );
+
+            this.actualizarTabla(usuariosFiltrados);
+        }
+
         private formatearFecha(fecha: string): string {
             const fechaObjeto = new Date(fecha);
             return this.formatoFecha(fechaObjeto);
@@ -157,6 +170,21 @@ namespace Usuarios {
             this.ventana.append("button")
                 .text("Agregar Usuario")
                 .on("click", () => this.agregarUsuario());
+            const searchContainer = this.ventana.append("div")
+                .style("margin-bottom", "15px");
+
+            searchContainer.append("label")
+                .text("Buscar: ")
+                .style("margin-right", "5px");
+
+            const inputBusqueda = searchContainer.append("input")
+                .attr("type", "text")
+                .attr("placeholder", "Buscar por nombre, correo, estado...")
+                .attr("class", "input-estilizado")
+                .style("width", "80%")
+                .style("padding", "8px");
+
+            inputBusqueda.on("keyup", () => this.filtrarUsuarios(inputBusqueda.property("value")));
 
             this.ventana.append("div")
                 .attr("id", "tabla-usuarios")
@@ -196,18 +224,18 @@ namespace Usuarios {
             this.inputCorreo.property("value", "");
         }
 
-        private actualizarTabla(): void {
+        private actualizarTabla(usuariosFiltrados?: Usuario[]): void {
             const contenedorTabla = d3.select("#tabla-usuarios");
             contenedorTabla.html("");
-        
+
             const tabla = contenedorTabla.append("table")
                 .attr("border", "1")
                 .style("width", "100%")
                 .style("border-collapse", "collapse")
                 .style("background", "#fff");
-        
+
             const encabezados = ["ID", "Nombre", "A. Paterno", "A. Materno", "Edad", "Correo", "Estado", "Registro", "Acciones"];
-            
+
             tabla.append("thead").append("tr").selectAll("th")
                 .data(encabezados)
                 .enter()
@@ -218,20 +246,20 @@ namespace Usuarios {
                 .style("border", "1px solid #ddd")
                 .style("font-weight", "bold")
                 .style("text-align", "center");
-        
+
             const tbody = tabla.append("tbody");
-            const usuariosArray = Array.from(this.usuarios.values());
-        
+            const usuariosArray = usuariosFiltrados || Array.from(this.usuarios.values());
+
             const filas = tbody.selectAll("tr").data(usuariosArray).enter().append("tr")
                 .style("border-bottom", "1px solid #ddd")
                 .style("background-color", (d, i) => i % 2 === 0 ? "#f9f9f9" : "#ffffff");
-        
+
             filas.selectAll("td")
                 .data(d => Object.values(d))
                 .enter()
                 .append("td")
                 .text(d => d);
-        
+
             filas.append("td").append("button")
                 .text("❌ Eliminar")
                 .style("padding", "5px 10px")
@@ -242,6 +270,7 @@ namespace Usuarios {
                 .style("cursor", "pointer")
                 .on("click", (event, d) => this.eliminarUsuario(d.id));
         }
-        
+
+
     }
 }

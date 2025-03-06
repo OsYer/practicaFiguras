@@ -37,6 +37,15 @@ var Usuarios;
                 this.actualizarTabla();
             }
         }
+        filtrarUsuarios(texto) {
+            const textoBusqueda = texto.toLowerCase();
+            const usuariosFiltrados = Array.from(this.usuarios.values()).filter(usuario => usuario.nombre.toLowerCase().includes(textoBusqueda) ||
+                usuario.apellidoPaterno.toLowerCase().includes(textoBusqueda) ||
+                usuario.apellidoMaterno.toLowerCase().includes(textoBusqueda) ||
+                usuario.correo.toLowerCase().includes(textoBusqueda) ||
+                usuario.estado.toLowerCase().includes(textoBusqueda));
+            this.actualizarTabla(usuariosFiltrados);
+        }
         formatearFecha(fecha) {
             const fechaObjeto = new Date(fecha);
             return this.formatoFecha(fechaObjeto);
@@ -131,6 +140,18 @@ var Usuarios;
             this.ventana.append("button")
                 .text("Agregar Usuario")
                 .on("click", () => this.agregarUsuario());
+            const searchContainer = this.ventana.append("div")
+                .style("margin-bottom", "15px");
+            searchContainer.append("label")
+                .text("Buscar: ")
+                .style("margin-right", "5px");
+            const inputBusqueda = searchContainer.append("input")
+                .attr("type", "text")
+                .attr("placeholder", "Buscar por nombre, correo, estado...")
+                .attr("class", "input-estilizado")
+                .style("width", "80%")
+                .style("padding", "8px");
+            inputBusqueda.on("keyup", () => this.filtrarUsuarios(inputBusqueda.property("value")));
             this.ventana.append("div")
                 .attr("id", "tabla-usuarios")
                 .style("padding", "10px")
@@ -163,7 +184,7 @@ var Usuarios;
             this.inputEdad.property("value", "");
             this.inputCorreo.property("value", "");
         }
-        actualizarTabla() {
+        actualizarTabla(usuariosFiltrados) {
             const contenedorTabla = d3.select("#tabla-usuarios");
             contenedorTabla.html("");
             const tabla = contenedorTabla.append("table")
@@ -183,7 +204,7 @@ var Usuarios;
                 .style("font-weight", "bold")
                 .style("text-align", "center");
             const tbody = tabla.append("tbody");
-            const usuariosArray = Array.from(this.usuarios.values());
+            const usuariosArray = usuariosFiltrados || Array.from(this.usuarios.values());
             const filas = tbody.selectAll("tr").data(usuariosArray).enter().append("tr")
                 .style("border-bottom", "1px solid #ddd")
                 .style("background-color", (d, i) => i % 2 === 0 ? "#f9f9f9" : "#ffffff");
