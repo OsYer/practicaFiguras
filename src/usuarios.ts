@@ -230,7 +230,9 @@ namespace Usuarios {
 
             const tabla = contenedorTabla.append("table")
                 .attr("border", "1")
-                .style("width", "100%")
+                .style("width", "100%").style("max-width", "100%")
+                .style("table-layout", "fixed") 
+                .style("word-wrap", "break-word")  
                 .style("border-collapse", "collapse")
                 .style("background", "#fff");
 
@@ -252,7 +254,6 @@ namespace Usuarios {
 
             const filas = tbody.selectAll("tr").data(usuariosArray).enter().append("tr")
                 .style("border-bottom", "1px solid #ddd")
-                .style("background-color", (d, i) => i % 2 === 0 ? "#f9f9f9" : "#ffffff");
 
             filas.selectAll("td")
                 .data(d => Object.values(d))
@@ -266,7 +267,7 @@ namespace Usuarios {
                 .text("Editar")
                 .style("margin-right", "5px")
                 .style("padding", "5px 10px")
-                .style("background", "#ffc107")
+                .style("background", "#0000FF")
                 .style("color", "#fff")
                 .style("border", "none")
                 .style("border-radius", "5px")
