@@ -231,8 +231,8 @@ namespace Usuarios {
             const tabla = contenedorTabla.append("table")
                 .attr("border", "1")
                 .style("width", "100%").style("max-width", "100%")
-                .style("table-layout", "fixed") 
-                .style("word-wrap", "break-word")  
+                .style("table-layout", "fixed")
+                .style("word-wrap", "break-word")
                 .style("border-collapse", "collapse")
                 .style("background", "#fff");
 
